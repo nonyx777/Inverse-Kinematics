@@ -13,6 +13,9 @@ private:
     static Scene *instance;
     std::vector<std::vector<Box>> grid;
 
+    std::vector<Circle> joints;
+    std::vector<Line> links;
+
 private:
     Scene();
     ~Scene();
