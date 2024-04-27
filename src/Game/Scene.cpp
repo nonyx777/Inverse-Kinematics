@@ -23,7 +23,7 @@ Scene::Scene()
     float angle = Math::_atan2(o_joint1.y, o_joint1.x);
     joints[0].property.setRotation(angle);
     O.x = angle;
-    
+
     // 2nd joint
     sf::Vector2f o_joint2 = joints[2].property.getPosition() - joints[1].property.getPosition();
     angle = Math::_atan2(o_joint2.y, o_joint2.x);
@@ -38,7 +38,7 @@ Scene::Scene()
     }
 
     // target...
-    target = Circle(10.f, joints[2].property.getPosition() + sf::Vector2f(0.f, 50.f));
+    target = Circle(10.f, joints[2].property.getPosition() - sf::Vector2f(50.f, 100.f));
     target.property.setFillColor(sf::Color::Red);
 }
 
@@ -58,16 +58,8 @@ Scene *Scene::getInstance()
 void Scene::update(float dt)
 {
     this->alignLink();
-
-    joints[0].property.rotate(1.f);
-    float angle = joints[0].property.getRotation();
-    sf::Vector2f joint_2 = sf::Vector2f(Math::_cos(angle) * this->length, Math::_sin(angle) * this->length);
-    joints[1].property.setPosition(joints[0].property.getPosition() + joint_2);
-
-    joints[1].property.rotate(0.5f);
-    angle = joints[1].property.getRotation();
-    sf::Vector2f joint_3 = sf::Vector2f(Math::_cos(angle) * this->length, Math::_sin(angle) * this->length);
-    joints[2].property.setPosition(joints[1].property.getPosition() + joint_3);
+    // ik
+    solveIK(dt);
 }
 
 void Scene::render(sf::RenderTarget *target)
@@ -102,29 +94,61 @@ void Scene::alignLink()
     }
 }
 
+void Scene::alignJoint()
+{
+    float angle = joints[0].property.getRotation();
+    sf::Vector2f joint_2 = sf::Vector2f(Math::_cos(angle) * this->length, Math::_sin(angle) * this->length);
+    joints[1].property.setPosition(joints[0].property.getPosition() + joint_2);
+
+    angle = joints[1].property.getRotation();
+    sf::Vector2f joint_3 = sf::Vector2f(Math::_cos(angle) * this->length, Math::_sin(angle) * this->length);
+    joints[2].property.setPosition(joints[1].property.getPosition() + joint_3);
+}
+
 void Scene::solveIK(float dt)
 {
     float distance = Math::_length(joints[2].property.getPosition() - target.property.getPosition());
-    while (distance > epsilon)
-    {
-        dO = deltaOrientation();
-        O += dO * dt;
-    }
+    // while (distance > epsilon)
+    // {
+    dO = deltaOrientation();
+    O += dO * 0.0001f;
+    joints[0].property.setRotation(O.x);
+    joints[1].property.setRotation(O.y);
+    alignJoint();
+    // }
 }
 
 glm::vec2 Scene::deltaOrientation()
 {
     jT = transposeJacobian();
 
-    sf::Vector2f V_tempo = Math::_displacement(target.property.getPosition(), this->joints[2].property.getPosition());
+    sf::Vector2f V_tempo = target.property.getPosition() - this->joints[2].property.getPosition();
     V = glm::vec2(V_tempo.x, V_tempo.y);
 
     dO = jT * V;
+    return dO;
 }
 
 glm::mat2 Scene::transposeJacobian()
 {
-    glm::mat2 jacobian = glm::mat2(1.f);
+    glm::mat2x2 jacobian;
+
+    // 1st column (1st joint)
+    sf::Vector2f differ = this->joints[2].property.getPosition() - this->joints[0].property.getPosition();
+    float dx_theta = -Math::_sin(this->joints[0].property.getRotation()) * differ.x;
+    float dy_theta = -Math::_cos(this->joints[0].property.getRotation()) * differ.y;
+
+    jacobian[0][0] = dx_theta;
+    jacobian[1][0] = dy_theta;
+
+    // 2nd column (2nd joint)
+    differ = this->joints[2].property.getPosition() - this->joints[1].property.getPosition();
+    dx_theta = -Math::_sin(this->joints[1].property.getRotation()) * differ.x;
+    dy_theta = -Math::_cos(this->joints[1].property.getRotation()) * differ.y;
+
+    jacobian[0][1] = dx_theta;
+    jacobian[1][1] = dy_theta;
+
     jT = glm::transpose(jacobian);
 
     return jT;

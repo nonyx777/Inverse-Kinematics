@@ -22,8 +22,8 @@ private:
 
     //IK related
     glm::vec2 O, dO, V;
-    glm::mat2 jT = glm::mat2(1.f);
-    float epsilon;
+    glm::mat2x2 jT = glm::mat2(1.f);
+    float epsilon = 0.1;
 
 private:
     Scene();
@@ -41,6 +41,7 @@ public:
     void render(sf::RenderTarget *target) override;
 
     void alignLink();
+    void alignJoint();
 
     //IK related
     void solveIK(float dt);
