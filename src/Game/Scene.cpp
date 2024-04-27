@@ -22,10 +22,13 @@ Scene::Scene()
     sf::Vector2f o_joint1 = joints[1].property.getPosition() - joints[0].property.getPosition();
     float angle = Math::_atan2(o_joint1.y, o_joint1.x);
     joints[0].property.setRotation(angle);
+    O.x = angle;
+    
     // 2nd joint
     sf::Vector2f o_joint2 = joints[2].property.getPosition() - joints[1].property.getPosition();
     angle = Math::_atan2(o_joint2.y, o_joint2.x);
     joints[1].property.setRotation(angle);
+    O.y = angle;
 
     // setting up the links
     for (int i = 0; i < this->joints.size() - 1; i++)
