@@ -1,4 +1,5 @@
 #pragma once
+#include <glm/glm.hpp>
 
 #include "../GameObject.hpp"
 #include "../Entities/Entities.hpp"
@@ -16,6 +17,14 @@ private:
     std::vector<Circle> joints;
     std::vector<Line> links;
 
+    Circle target;
+    float length = 100.f;
+
+    //IK related
+    glm::vec2 O, dO, V;
+    glm::mat2 jT = glm::mat2(1.f);
+    float epsilon;
+
 private:
     Scene();
     ~Scene();
@@ -30,4 +39,11 @@ public:
     void update(float dt) override;
     void update(sf::Vector2f &vec, float dt);
     void render(sf::RenderTarget *target) override;
+
+    void alignLink();
+
+    //IK related
+    void solveIK(float dt);
+    glm::vec2 deltaOrientation();
+    glm::mat2 transposeJacobian();
 };
