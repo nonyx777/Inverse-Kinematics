@@ -83,6 +83,11 @@ void Scene::render(sf::RenderTarget *target)
     }
 }
 
+void Scene::getMousePos(sf::Vector2f mouse_position)
+{
+    target.property.setPosition(mouse_position);
+}
+
 void Scene::alignLink()
 {
     this->links.clear();
@@ -108,14 +113,14 @@ void Scene::alignJoint()
 void Scene::solveIK(float dt)
 {
     float distance = Math::_length(joints[2].property.getPosition() - target.property.getPosition());
-    // while (distance > epsilon)
-    // {
+    if (distance < epsilon)
+        return;
+
     dO = deltaOrientation();
-    O += dO * 0.0001f;
+    O += dO * timestep;
     joints[0].property.setRotation(O.x);
     joints[1].property.setRotation(O.y);
     alignJoint();
-    // }
 }
 
 glm::vec2 Scene::deltaOrientation()

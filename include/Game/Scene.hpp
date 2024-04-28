@@ -23,7 +23,8 @@ private:
     //IK related
     glm::vec2 O, dO, V;
     glm::mat2x2 jT = glm::mat2(1.f);
-    float epsilon = 0.1;
+    float epsilon = 2.f;
+    float timestep = 0.001f;
 
 private:
     Scene();
@@ -40,6 +41,10 @@ public:
     void update(sf::Vector2f &vec, float dt);
     void render(sf::RenderTarget *target) override;
 
+    //get mouse position
+    void getMousePos(sf::Vector2f mouse_position);
+
+    //joint and link
     void alignLink();
     void alignJoint();
 
