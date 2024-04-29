@@ -154,6 +154,10 @@ glm::mat2 Scene::transposeJacobian()
     jacobian[0][1] = dx_theta;
     jacobian[1][1] = dy_theta;
 
+    // //damping least square
+    // float damping_factor = 0.1f;
+    // glm::mat2x2 jacobian_t_damped = glm::transpose(jacobian) * glm::inverse(jacobian * glm::transpose(jacobian) + damping_factor * damping_factor * glm::mat2x2(1.f));
+
     jT = glm::transpose(jacobian);
 
     return jT;

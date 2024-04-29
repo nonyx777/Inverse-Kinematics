@@ -23,7 +23,7 @@ private:
     //IK related
     glm::vec2 O, dO, V;
     glm::mat2x2 jT = glm::mat2(1.f);
-    float epsilon = 2.f;
+    float epsilon = 0.1f;
     float timestep = 0.001f;
 
 private:
