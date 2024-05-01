@@ -38,7 +38,6 @@ public:
     static Scene *getInstance();
 
     void update(float dt) override;
-    void update(sf::Vector2f &vec, float dt);
     void render(sf::RenderTarget *target) override;
 
     //get mouse position

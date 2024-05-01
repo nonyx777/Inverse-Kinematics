@@ -125,16 +125,16 @@ glm::mat2 Scene::transposeJacobian()
 
     // 1st column (1st joint)
     sf::Vector2f differ = this->joints[2].property.getPosition() - this->joints[0].property.getPosition();
-    float dx_theta = -Math::_sin(this->joints[0].property.getRotation()) * differ.x;
-    float dy_theta = -Math::_cos(this->joints[0].property.getRotation()) * differ.y;
+    float dx_theta = -differ.y;
+    float dy_theta = differ.x;
 
     jacobian[0][0] = dx_theta;
     jacobian[1][0] = dy_theta;
 
     // 2nd column (2nd joint)
     differ = this->joints[2].property.getPosition() - this->joints[1].property.getPosition();
-    dx_theta = -Math::_sin(this->joints[1].property.getRotation()) * differ.x;
-    dy_theta = -Math::_cos(this->joints[1].property.getRotation()) * differ.y;
+    dx_theta = -differ.y;
+    dy_theta = differ.x;
 
     jacobian[0][1] = dx_theta;
     jacobian[1][1] = dy_theta;
@@ -148,3 +148,38 @@ glm::mat2 Scene::transposeJacobian()
 
     return glm::transpose(jacobian);
 }
+
+//TODO:
+// def angle_between_line_and_point(line, point):
+//     # Calculate the direction vector of the line
+//     line_direction = (line.end.x - line.start.x, line.end.y - line.start.y)
+
+//     # Calculate the vector from the start point of the line to the point
+//     point_vector = (point.x - line.start.x, point.y - line.start.y)
+
+//     # Calculate the dot product between the line direction and the point vector
+//     dot_product = line_direction[0] * point_vector[0] + line_direction[1] * point_vector[1]
+
+//     # Calculate the magnitudes of the line direction and the point vector
+//     line_magnitude = math.sqrt(line_direction[0] ** 2 + line_direction[1] ** 2)
+//     point_magnitude = math.sqrt(point_vector[0] ** 2 + point_vector[1] ** 2)
+
+//     # Calculate the cosine of the angle between the line and the point vector
+//     cosine_angle = dot_product / (line_magnitude * point_magnitude)
+
+//     # Calculate the angle in radians
+//     angle_radians = math.acos(cosine_angle)
+
+//     # Convert the angle to degrees
+//     angle_degrees = math.degrees(angle_radians)
+
+//     # Determine the orientation of the angle relative to the line
+//     # Cross product between line direction and point vector
+//     cross_product = line_direction[0] * point_vector[1] - line_direction[1] * point_vector[0]
+
+//     # If cross product is positive, angle is counter-clockwise (left side of the line)
+//     # If cross product is negative, angle is clockwise (right side of the line)
+//     if cross_product < 0:
+//         angle_degrees = 360 - angle_degrees
+
+//     return angle_degrees
