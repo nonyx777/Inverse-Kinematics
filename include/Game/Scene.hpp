@@ -21,7 +21,7 @@ private:
     float length = 100.f;
 
     //IK related
-    glm::vec2 O, dO, V;
+    glm::vec2 dO, V;
     glm::mat2x2 jT;
     float epsilon = 0.1f;
     float timestep = 0.001f;
