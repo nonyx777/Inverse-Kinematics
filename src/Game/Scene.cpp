@@ -17,17 +17,6 @@ Scene::Scene()
     joint = Circle(10.f, sf::Vector2f(GLOBAL::window_width / 2.f + 100.f, GLOBAL::window_height / 2.f));
     this->joints.push_back(joint);
 
-    // configuring orientations for joints
-    // 1st joint
-    sf::Vector2f o_joint1 = joints[1].property.getPosition() - joints[0].property.getPosition();
-    float angle = Math::_atan2(o_joint1.y, o_joint1.x);
-    joints[0].property.setRotation(angle);
-
-    // 2nd joint
-    sf::Vector2f o_joint2 = joints[2].property.getPosition() - joints[1].property.getPosition();
-    angle = Math::_atan2(o_joint2.y, o_joint2.x);
-    joints[1].property.setRotation(angle);
-
     // setting up the links
     for (int i = 0; i < this->joints.size() - 1; i++)
     {
@@ -117,6 +106,7 @@ void Scene::solveIK(float dt)
     dO = deltaOrientation();
     joints[0].property.rotate(dO.x * timestep);
     joints[1].property.rotate(dO.y * timestep);
+    alignJoint();
 }
 
 glm::vec2 Scene::deltaOrientation()
@@ -126,8 +116,7 @@ glm::vec2 Scene::deltaOrientation()
     sf::Vector2f V_tempo = target.property.getPosition() - this->joints[2].property.getPosition();
     V = glm::vec2(V_tempo.x, V_tempo.y);
 
-    dO = jT * V;
-    return dO;
+    return jT * V;
 }
 
 glm::mat2 Scene::transposeJacobian()
@@ -157,7 +146,5 @@ glm::mat2 Scene::transposeJacobian()
     // pseudoinverse
     // glm::mat2x2 jacobian_pseudoinv = glm::transpose(jacobian) * glm::inverse(jacobian * glm::transpose(jacobian));
 
-    jT = glm::transpose(jacobian);
-
-    return jT;
+    return glm::transpose(jacobian);
 }
