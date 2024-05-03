@@ -5,6 +5,7 @@ void Texture::load(sf::Texture *texture, const char *path)
     try
     {
         texture->loadFromFile(path);
+        texture->setRepeated(true);
     }
     catch (...)
     {

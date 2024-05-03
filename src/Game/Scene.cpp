@@ -22,6 +22,19 @@ Scene::Scene()
     // target...
     target = Circle(10.f, joints[2].property.getPosition() - sf::Vector2f(50.f, 100.f));
     target.property.setFillColor(sf::Color::Red);
+
+    // setting up arm segments
+    // textures
+    Texture::load(&upperarm_texture, "../resource/bodyparts/Upper-Arm.png");
+    Texture::load(&lowerarm_texture, "../resource/bodyparts/Lower-Arm.png");
+    Texture::load(&wrist_texture, "../resource/bodyparts/Hand-Open.png");
+    // actual parts (boxes)
+    upperarm = Box(sf::Vector2f(100.f, 50.f), joints[0].property.getPosition());
+    lowerarm = Box(sf::Vector2f(100.f, 50.f), joints[1].property.getPosition());
+    wrist = Box(sf::Vector2f(60.f, 40.f), joints[2].property.getPosition());
+    upperarm.property.setTexture(&upperarm_texture);
+    lowerarm.property.setTexture(&lowerarm_texture);
+    wrist.property.setTexture(&wrist_texture);
 }
 
 Scene::~Scene()
@@ -39,30 +52,26 @@ Scene *Scene::getInstance()
 
 void Scene::update(float dt)
 {
-    this->alignLink();
     // ik
     solveIK(dt);
+    //alignment
+    alignLink();
+    alignBody();
 }
 
 void Scene::render(sf::RenderTarget *target)
 {
-    for (Circle &circle : this->joints)
-        circle.render(target);
-    for (Line &line : this->links)
-        line.render(target);
+    // for (Circle &circle : this->joints)
+    //     circle.render(target);
+    // for (Line &line : this->links)
+    //     line.render(target);
 
     this->target.render(target);
 
-    if (this->grid.size() > 0)
-    {
-        for (uint i = 0; i < grid.size(); i++)
-        {
-            for (uint j = 0; j < grid[i].size(); j++)
-            {
-                target->draw(grid[i][j].property);
-            }
-        }
-    }
+    // body-parts
+    upperarm.render(target);
+    lowerarm.render(target);
+    wrist.render(target);
 }
 
 void Scene::getMousePos(sf::Vector2f mouse_position)
@@ -90,6 +99,17 @@ void Scene::alignJoint()
     angle = joints[1].property.getRotation();
     sf::Vector2f joint_3 = sf::Vector2f(Math::_cos(angle) * this->length, Math::_sin(angle) * this->length);
     joints[2].property.setPosition(joints[1].property.getPosition() + joint_3);
+}
+
+void Scene::alignBody()
+{
+    //upper
+    upperarm.property.setRotation(joints[0].property.getRotation());
+    //lower
+    lowerarm.property.setPosition(joints[1].property.getPosition());
+    lowerarm.property.setRotation(joints[1].property.getRotation());
+    //wrist
+    wrist.property.setPosition(joints[2].property.getPosition());
 }
 
 void Scene::solveIK(float dt)

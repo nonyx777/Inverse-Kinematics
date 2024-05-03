@@ -24,7 +24,7 @@ Box::Box(uint size, sf::Vector2f position)
 Box::Box(sf::Vector2f size, sf::Vector2f position)
 {
     this->property.setSize(size);
-    this->property.setOrigin(size/2.f);
+    this->property.setOrigin(sf::Vector2f(0.f, size.y / 2.f));
     this->property.setPosition(position);
     this->property.setFillColor(sf::Color::White);
 }

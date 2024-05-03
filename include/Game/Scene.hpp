@@ -7,6 +7,7 @@
 #include "../Util/Grid.hpp"
 #include "../Globals.hpp"
 #include "../Util/Collision.hpp"
+#include "../Util/Loader.hpp"
 
 class Scene : public GameObject
 {
@@ -25,6 +26,10 @@ private:
     glm::mat2x2 jT;
     float epsilon = 0.1f;
     float timestep = 0.001f;
+
+    //body parts
+    sf::Texture upperarm_texture, lowerarm_texture, wrist_texture;
+    Box upperarm, lowerarm, wrist;
 
 private:
     Scene();
@@ -46,6 +51,7 @@ public:
     //joint and link
     void alignLink();
     void alignJoint();
+    void alignBody();
 
     //IK related
     void solveIK(float dt);
