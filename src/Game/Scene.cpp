@@ -4,11 +4,6 @@ Scene *Scene::instance = nullptr;
 
 Scene::Scene()
 {
-    if (GLOBAL::display_grid)
-    {
-        configureGrid(GLOBAL::cell_size, &this->grid);
-    }
-
     // setting up joints
     Circle joint = Circle(10.f, sf::Vector2f(GLOBAL::window_width / 2.f - 100.f, GLOBAL::window_height / 2.f));
     this->joints.push_back(joint);
@@ -148,38 +143,3 @@ glm::mat2 Scene::transposeJacobian()
 
     return glm::transpose(jacobian);
 }
-
-//TODO:
-// def angle_between_line_and_point(line, point):
-//     # Calculate the direction vector of the line
-//     line_direction = (line.end.x - line.start.x, line.end.y - line.start.y)
-
-//     # Calculate the vector from the start point of the line to the point
-//     point_vector = (point.x - line.start.x, point.y - line.start.y)
-
-//     # Calculate the dot product between the line direction and the point vector
-//     dot_product = line_direction[0] * point_vector[0] + line_direction[1] * point_vector[1]
-
-//     # Calculate the magnitudes of the line direction and the point vector
-//     line_magnitude = math.sqrt(line_direction[0] ** 2 + line_direction[1] ** 2)
-//     point_magnitude = math.sqrt(point_vector[0] ** 2 + point_vector[1] ** 2)
-
-//     # Calculate the cosine of the angle between the line and the point vector
-//     cosine_angle = dot_product / (line_magnitude * point_magnitude)
-
-//     # Calculate the angle in radians
-//     angle_radians = math.acos(cosine_angle)
-
-//     # Convert the angle to degrees
-//     angle_degrees = math.degrees(angle_radians)
-
-//     # Determine the orientation of the angle relative to the line
-//     # Cross product between line direction and point vector
-//     cross_product = line_direction[0] * point_vector[1] - line_direction[1] * point_vector[0]
-
-//     # If cross product is positive, angle is counter-clockwise (left side of the line)
-//     # If cross product is negative, angle is clockwise (right side of the line)
-//     if cross_product < 0:
-//         angle_degrees = 360 - angle_degrees
-
-//     return angle_degrees
