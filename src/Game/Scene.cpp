@@ -21,17 +21,18 @@ Scene::Scene()
 
     // target...
     target = Circle(10.f, joints[2].property.getPosition() - sf::Vector2f(50.f, 100.f));
-    target.property.setFillColor(sf::Color::Red);
+    target.property.setFillColor(sf::Color::White);
 
     // setting up arm segments
     // textures
     Texture::load(&upperarm_texture, "../resource/bodyparts/Upper-Arm.png");
     Texture::load(&lowerarm_texture, "../resource/bodyparts/Lower-Arm.png");
-    Texture::load(&wrist_texture, "../resource/bodyparts/Hand-Open.png");
+    Texture::load(&wrist_texture, "../resource/bodyparts/Hand-Side.png");
     // actual parts (boxes)
     upperarm = Box(sf::Vector2f(100.f, 50.f), joints[0].property.getPosition());
     lowerarm = Box(sf::Vector2f(100.f, 50.f), joints[1].property.getPosition());
     wrist = Box(sf::Vector2f(60.f, 40.f), joints[2].property.getPosition());
+    wrist.property.setOrigin(sf::Vector2f(0.f, 0.f));
     upperarm.property.setTexture(&upperarm_texture);
     lowerarm.property.setTexture(&lowerarm_texture);
     wrist.property.setTexture(&wrist_texture);
@@ -54,7 +55,7 @@ void Scene::update(float dt)
 {
     // ik
     solveIK(dt);
-    //alignment
+    // alignment
     alignLink();
     alignBody();
 }
@@ -103,12 +104,12 @@ void Scene::alignJoint()
 
 void Scene::alignBody()
 {
-    //upper
+    // upper
     upperarm.property.setRotation(joints[0].property.getRotation());
-    //lower
+    // lower
     lowerarm.property.setPosition(joints[1].property.getPosition());
     lowerarm.property.setRotation(joints[1].property.getRotation());
-    //wrist
+    // wrist
     wrist.property.setPosition(joints[2].property.getPosition());
 }
 
